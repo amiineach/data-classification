@@ -1,0 +1,38 @@
+[
+  {
+    "dataType": "Données personnelles",
+    "sensitivity": "high",
+    "businessImpact": "high",
+    "hasRegulatory": "yes",
+    "regulations": ["GDPR", "CCPA"],
+    "storage": ["Local files", "Shared drive"],
+    "storageOther": ["AWS S3"]
+  },
+  {
+    "dataType": "Données financières",
+    "sensitivity": "high",
+    "businessImpact": "high",
+    "hasRegulatory": "yes",
+    "regulations": ["SOX", "PCI-DSS"],
+    "storage": ["External database"],
+    "storageOther": ["Azure Blob Storage"]
+  },
+  {
+    "dataType": "Données de contact",
+    "sensitivity": "medium",
+    "businessImpact": "medium",
+    "hasRegulatory": "yes",
+    "regulations": ["GDPR"],
+    "storage": ["Shared drive"],
+    "storageOther": []
+  },
+  {
+    "dataType": "HR Data",
+    "sensitivity": "high",
+    "businessImpact": "high",
+    "hasRegulatory": "yes",
+    "regulations": ["HIPAA"],
+    "storage": ["Local files"],
+    "storageOther": ["Private Cloud"]
+  }
+]

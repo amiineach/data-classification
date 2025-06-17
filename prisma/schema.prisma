@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String         @id @default(uuid())
+  firstName      String
+  lastName       String
+  email          String         @unique
+  password       String
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  role           Role           @default(USER)
+  isActive       Boolean        @default(true)
+  profileImage   String?
+  bio            String?
+  organizations  Organization[] @relation("UserOrganizations")
+
+  @@map("users")
+}
+
+model Organization {
+  id            String       @id @default(uuid())
+  title         String
+  description   String?
+  status        Status       @default(ACTIVE)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  ownerId       String
+  owner         User         @relation("UserOrganizations", fields: [ownerId], references: [id], onDelete: Cascade)
+  firstStep     FirstStep?
+  secondStep    SecondStep?
+  thirdStep     ThirdStep?
+    fourthStep    FourthStep? // ✅ Add this line
+
+  @@map("organizations")
+}
+
+model FirstStep {
+  id              String       @id @default(uuid())
+  organizationId  String       @unique
+  data            Json
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("first_steps")
+}
+
+model SecondStep {
+  id              String       @id @default(uuid())
+  organizationId  String       @unique
+  data            Json
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("second_steps")
+}
+
+model ThirdStep {
+  id              String       @id @default(uuid())
+  organizationId  String       @unique
+  data            Json
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("third_steps")
+}
+
+model FourthStep {
+  id              String       @id @default(uuid())
+  organizationId  String       @unique
+  data            Json
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("fourth_steps")
+}
+
+
+
+enum Status {
+  ACTIVE
+  ARCHIVED
+  COMPLETED
+  PENDING  // Add this
+}
+
+enum Role {
+  USER
+  ADMIN
+}
