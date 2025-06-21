@@ -247,3 +247,59 @@ export const getCurrentUser = async () => {
     return null;
   }
 };
+
+// Add this new function to the bottom of src/actions/auth.ts
+
+// Schema for validating the profile update
+const updateProfileSchema = z.object({
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+});
+
+export const updateUserAction = async (formData: FormData) => {
+  "use server";
+
+  try {
+    // 1. Get the current logged-in user to ensure they are authenticated
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return { success: false, errors: { _form: ["You must be logged in to update your profile."] } };
+    }
+
+    // 2. Extract and validate the form data
+    const data = {
+      firstName: formData.get("firstName") as string,
+      lastName: formData.get("lastName") as string,
+      email: formData.get("email") as string,
+    };
+
+    const result = updateProfileSchema.safeParse(data);
+    if (!result.success) {
+      return { success: false, errors: result.error.flatten().fieldErrors };
+    }
+
+    // 3. Update the user in the database
+    // We use the ID from the authenticated user session to ensure users can only update their own profile.
+    await db.user.update({
+      where: { id: currentUser.id },
+      data: {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        // We do NOT include the role, so it cannot be changed.
+      },
+    });
+
+    return { success: true };
+
+  } catch (error) {
+    // Handle potential database errors, e.g., if the new email already exists
+    if (error instanceof Error && error.message.includes("Unique constraint failed")) {
+      return { success: false, errors: { email: ["This email address is already in use by another account."] } };
+    }
+
+    console.error("Update profile error:", error);
+    return { success: false, errors: { _form: ["An unexpected error occurred."] } };
+  }
+};
