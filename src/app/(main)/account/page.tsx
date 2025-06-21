@@ -1,9 +1,9 @@
 // File: src/app/(main)/account/page.tsx
-"use client"; // This page is now interactive, so we need "use client"
+"use client"; // This page is interactive, so we must use "use client"
 
 import { useState, useEffect, useTransition } from 'react';
-// We now need to import BOTH actions
 import { getCurrentUser, updateUserAction } from "@/actions/auth";
+import { Button } from "@/components/ui/button"; // Import the themed Button component
 
 // Define a type for our user state to avoid errors
 type UserProfile = {
@@ -20,6 +20,7 @@ export default function AccountPage() {
   const [isPending, startTransition] = useTransition();
 
   // --- Data Fetching ---
+  // Fetches the user data when the component first loads
   useEffect(() => {
     async function fetchUser() {
       const currentUser = await getCurrentUser();
@@ -31,12 +32,14 @@ export default function AccountPage() {
   }, []);
 
   // --- Form Submission Handler ---
+  // Calls the server action to update the user profile
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
       const result = await updateUserAction(formData);
       if (result.success) {
         alert("Profile updated successfully!");
         setIsEditing(false);
+        // Refresh the user data to show the new values
         const updatedUser = await getCurrentUser();
         if (updatedUser) setUser(updatedUser as UserProfile);
       } else {
@@ -47,10 +50,13 @@ export default function AccountPage() {
   };
 
   // --- Render Logic ---
+
+  // Show a loading state while fetching the user
   if (!user) {
-    return <div className="p-8">Loading profile...</div>;
+    return <div className="p-8 text-center">Loading profile...</div>;
   }
 
+  // Once the user is loaded, show the main page content
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold mb-6">My Account</h1>
@@ -106,20 +112,20 @@ export default function AccountPage() {
         <div className="flex justify-end gap-4">
           {isEditing ? (
             <>
-              <button type="button" onClick={() => setIsEditing(false)} className="px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600">
+              <Button type="button" variant="secondary" onClick={() => setIsEditing(false)}>
                 Cancel
-              </button>
-              <button type="submit" disabled={isPending} className="px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400">
+              </Button>
+              <Button type="submit" disabled={isPending}>
                 {isPending ? 'Saving...' : 'Save Changes'}
-              </button>
+              </Button>
             </>
           ) : (
-            <button type="button" onClick={() => setIsEditing(true)} className="px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+            <Button type="button" onClick={() => setIsEditing(true)}>
               Edit Profile
-            </button>
+            </Button>
           )}
         </div>
-      </form> {/* <-- MISSING </form> TAG ADDED HERE */}
-    </div>   //{/* <-- MISSING </div> TAG ADDED HERE */}
+      </form>
+    </div>
   );
 }
