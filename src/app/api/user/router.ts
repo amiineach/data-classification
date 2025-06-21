@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 // ===================================================================
 //  Handles GET requests (for your dashboard)
 // ===================================================================
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
   try {
     // This is a placeholder for the data your dashboard expects.
     // We are returning some dummy data to make the dashboard load correctly.
@@ -32,7 +32,7 @@ export async function GET(req: Request) {
 // ===================================================================
 //  Handles POST requests (for our new Policy Generator)
 // ===================================================================
-export async function POST(_req: Request) {
+export async function POST(req: Request) {
   try {
     // 1. SECURELY GET THE API KEY
     const apiKey = process.env.OPENROUTER_API_KEY;
