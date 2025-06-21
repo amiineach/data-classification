@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server';
 // ===================================================================
 //  Handles GET requests (for your dashboard)
 // ===================================================================
-export async function GET(_req: Request) {
+export async function GET() {
   try {
     // This is a placeholder for the data your dashboard expects.
     // We are returning some dummy data to make the dashboard load correctly.
