@@ -1,7 +1,8 @@
 // File: src/app/(main)/account/page.tsx
-"use client"; // This page is interactive, so we must use "use client"
+"use client"; // This page is now interactive, so we need "use client"
 
 import { useState, useEffect, useTransition } from 'react';
+// We now need to import BOTH actions
 import { getCurrentUser, updateUserAction } from "@/actions/auth";
 
 // Define a type for our user state to avoid errors
@@ -47,7 +48,7 @@ export default function AccountPage() {
 
   // --- Render Logic ---
   if (!user) {
-    return <div className="p-8 text-center">Loading profile...</div>;
+    return <div className="p-8">Loading profile...</div>;
   }
 
   return (
@@ -56,7 +57,7 @@ export default function AccountPage() {
       
       <form action={handleSubmit} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md max-w-2xl mx-auto">
         
-        {/* Input fields for First Name, Last Name, and Email */}
+        {/* First Name Field */}
         <div className="mb-4">
           <label htmlFor="firstName" className="text-sm font-medium text-gray-500 dark:text-gray-400">First Name</label>
           <input
@@ -68,6 +69,8 @@ export default function AccountPage() {
             className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-lg font-semibold text-gray-900 dark:text-white read-only:bg-gray-100 read-only:dark:bg-gray-800 read-only:border-transparent"
           />
         </div>
+
+        {/* Last Name Field */}
         <div className="mb-4">
           <label htmlFor="lastName" className="text-sm font-medium text-gray-500 dark:text-gray-400">Last Name</label>
           <input
@@ -79,6 +82,8 @@ export default function AccountPage() {
             className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-lg font-semibold text-gray-900 dark:text-white read-only:bg-gray-100 read-only:dark:bg-gray-800 read-only:border-transparent"
           />
         </div>
+        
+        {/* Email Field */}
         <div className="mb-4">
           <label htmlFor="email" className="text-sm font-medium text-gray-500 dark:text-gray-400">Email Address</label>
           <input
@@ -104,21 +109,17 @@ export default function AccountPage() {
               <button type="button" onClick={() => setIsEditing(false)} className="px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600">
                 Cancel
               </button>
-              {/* --- THIS BUTTON IS NOW INDIGO --- */}
               <button type="submit" disabled={isPending} className="px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400">
                 {isPending ? 'Saving...' : 'Save Changes'}
               </button>
             </>
           ) : (
-            <>
-              {/* --- THIS BUTTON IS NOW INDIGO --- */}
-              <button type="button" onClick={() => setIsEditing(true)} className="px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                Edit Profile
-              </button>
-            </>
+            <button type="button" onClick={() => setIsEditing(true)} className="px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+              Edit Profile
+            </button>
           )}
         </div>
-      </form>
-    </div>
+      </form> {/* <-- MISSING </form> TAG ADDED HERE */}
+    </div>   //{/* <-- MISSING </div> TAG ADDED HERE */}
   );
 }
