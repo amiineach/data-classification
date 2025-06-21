@@ -1,11 +1,9 @@
 // File: src/app/(main)/account/page.tsx
-"use client"; // This page is now interactive, so we need "use client"
+"use client";
 
 import { useState, useEffect, useTransition } from 'react';
-// We now need to import BOTH actions
 import { getCurrentUser, updateUserAction } from "@/actions/auth";
 
-// Define a type for our user state to avoid errors
 type UserProfile = {
   id: string;
   firstName: string | null;
@@ -19,7 +17,6 @@ export default function AccountPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // --- Data Fetching ---
   useEffect(() => {
     async function fetchUser() {
       const currentUser = await getCurrentUser();
@@ -30,7 +27,6 @@ export default function AccountPage() {
     fetchUser();
   }, []);
 
-  // --- Form Submission Handler ---
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
       const result = await updateUserAction(formData);
@@ -46,80 +42,118 @@ export default function AccountPage() {
     });
   };
 
-  // --- Render Logic ---
   if (!user) {
-    return <div className="p-8">Loading profile...</div>;
+    return (
+      <div className="p-8 flex justify-center items-center h-64">
+        <div className="text-lg">Loading profile...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">My Account</h1>
+    <div className="p-8 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800 dark:text-white">My Account</h1>
       
-      <form action={handleSubmit} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md max-w-2xl mx-auto">
-        
-        {/* First Name Field */}
-        <div className="mb-4">
-          <label htmlFor="firstName" className="text-sm font-medium text-gray-500 dark:text-gray-400">First Name</label>
-          <input
-            id="firstName"
-            name="firstName"
-            type="text"
-            defaultValue={user.firstName || ''}
-            readOnly={!isEditing}
-            className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-lg font-semibold text-gray-900 dark:text-white read-only:bg-gray-100 read-only:dark:bg-gray-800 read-only:border-transparent"
-          />
-        </div>
+      <form 
+        action={handleSubmit} 
+        className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md"
+      >
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          {/* First Name Field */}
+          <div>
+            <label 
+              htmlFor="firstName" 
+              className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+            >
+              First Name
+            </label>
+            <input
+              id="firstName"
+              name="firstName"
+              type="text"
+              defaultValue={user.firstName || ''}
+              readOnly={!isEditing}
+              className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-base text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
 
-        {/* Last Name Field */}
-        <div className="mb-4">
-          <label htmlFor="lastName" className="text-sm font-medium text-gray-500 dark:text-gray-400">Last Name</label>
-          <input
-            id="lastName"
-            name="lastName"
-            type="text"
-            defaultValue={user.lastName || ''}
-            readOnly={!isEditing}
-            className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-lg font-semibold text-gray-900 dark:text-white read-only:bg-gray-100 read-only:dark:bg-gray-800 read-only:border-transparent"
-          />
+          {/* Last Name Field */}
+          <div>
+            <label 
+              htmlFor="lastName" 
+              className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+            >
+              Last Name
+            </label>
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              defaultValue={user.lastName || ''}
+              readOnly={!isEditing}
+              className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-base text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+          </div>
         </div>
         
         {/* Email Field */}
-        <div className="mb-4">
-          <label htmlFor="email" className="text-sm font-medium text-gray-500 dark:text-gray-400">Email Address</label>
+        <div className="mb-6">
+          <label 
+            htmlFor="email" 
+            className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1"
+          >
+            Email Address
+          </label>
           <input
             id="email"
             name="email"
             type="email"
             defaultValue={user.email}
             readOnly={!isEditing}
-            className="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-lg font-semibold text-gray-900 dark:text-white read-only:bg-gray-100 read-only:dark:bg-gray-800 read-only:border-transparent"
+            className="w-full px-4 py-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-base text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
         </div>
         
-        {/* Role Field (Always read-only) */}
-        <div className="mb-6">
-          <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Role</label>
-          <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.role}</p>
+        {/* Role Field */}
+        <div className="mb-8">
+          <label className="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
+            Role
+          </label>
+          <div className="px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+            <p className="text-base font-medium text-gray-900 dark:text-white">{user.role}</p>
+          </div>
         </div>
 
-        {/* Buttons */}
-        <div className="flex justify-end gap-4">
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           {isEditing ? (
             <>
-              <button type="button" onClick={() => setIsEditing(false)} className="px-4 py-2 rounded-md text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600">
+              <button 
+                type="button" 
+                onClick={() => setIsEditing(false)}
+                className="px-5 py-2.5 rounded-lg text-indigo-700 dark:text-indigo-200 bg-indigo-100 hover:bg-indigo-200 dark:bg-indigo-900 dark:hover:bg-indigo-800 transition-colors"
+              >
                 Cancel
               </button>
-              <button type="submit" disabled={isPending} className="px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400">
+              <button 
+                type="submit" 
+                disabled={isPending}
+                className="px-5 py-2.5 rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 disabled:bg-indigo-400 transition-colors"
+              >
                 {isPending ? 'Saving...' : 'Save Changes'}
               </button>
             </>
           ) : (
-            <button type="button" onClick={() => setIsEditing(true)} className="px-4 py-2 rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+            <button 
+              type="button" 
+              onClick={() => setIsEditing(true)}
+              className="px-5 py-2.5 rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-800 transition-colors"
+            >
               Edit Profile
             </button>
           )}
         </div>
-      </form> {/* <-- MISSING </form> TAG ADDED HERE */}
-    </div>   //{/* <-- MISSING </div> TAG ADDED HERE */}
+      </form>
+    </div>
   );
 }
