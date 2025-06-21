@@ -101,7 +101,7 @@ export default function AccountPage() {
         
         {/* Role Field (Always read-only) */}
         <div className="mb-6">
-          <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Role</g>
+          <label className="text-sm font-medium text-gray-500 dark:text-gray-400">Role</label>
           <p className="text-lg font-semibold text-gray-900 dark:text-white">{user.role}</p>
         </div>
 
