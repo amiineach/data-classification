@@ -32,7 +32,7 @@ export async function GET(req: Request) {
 // ===================================================================
 //  Handles POST requests (for our new Policy Generator)
 // ===================================================================
-export async function POST(req: Request) {
+export async function POST(_req: Request) {
   try {
     // 1. SECURELY GET THE API KEY
     const apiKey = process.env.OPENROUTER_API_KEY;
