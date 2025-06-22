@@ -303,3 +303,39 @@ export const updateUserAction = async (formData: FormData) => {
     return { success: false, errors: { _form: ["An unexpected error occurred."] } };
   }
 };
+
+// Add this new function to the bottom of src/actions/auth.ts
+
+export const deleteAccountAction = async () => {
+  "use server";
+
+  try {
+    // 1. Get the current user to ensure they are authenticated. This is a critical security step.
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      // This should technically never be reached if the button is on a protected page,
+      // but it's a vital security check.
+      throw new Error("You must be logged in to delete an account.");
+    }
+
+    // 2. Delete the user from the database using their authenticated ID.
+    await db.user.delete({
+      where: { id: currentUser.id },
+    });
+
+    // 3. Log the user out by deleting their session cookie.
+    const awaitedCookies = await cookies();
+    awaitedCookies.delete("auth-token");
+
+    // 4. Redirect to the homepage or login page after successful deletion.
+    redirect("/"); 
+
+  } catch (error) {
+    console.error("Delete account error:", error);
+    // Return an error message if something goes wrong
+    return {
+      success: false,
+      errors: { _form: ["An unexpected error occurred while deleting your account."] },
+    };
+  }
+};
