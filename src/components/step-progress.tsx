@@ -41,8 +41,9 @@ const steps = [
 export function ProgressSteps({ projectId }: { projectId: string }) {
   console.log(projectId);
   const pathname = usePathname();
-  const currentStep =
-    steps.find((step) => pathname.includes(step.path))?.id || 1;
+  // This new logic is more robust and correctly finds the step number.
+const match = pathname.match(/step(\d+)/);
+const currentStep = match ? parseInt(match[1], 10) : 1;
   const totalSteps = steps.length;
 
   return (
